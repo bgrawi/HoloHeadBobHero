@@ -3,11 +3,17 @@ using UnityEngine;
 
 public class WorldCursor : MonoBehaviour
 {
+
+    public bool OnlyWalls = false;
+
+    private int raycastMask;
     private MeshRenderer meshRenderer;
 
     // Use this for initialization
     void Start()
     {
+
+        raycastMask = OnlyWalls ? SpatialMappingManager.Instance.WallMask : int.MinValue;
         // Grab the mesh renderer that's on the same object as this script.
         meshRenderer = this.gameObject.GetComponentInChildren<MeshRenderer>();
     }
@@ -22,7 +28,7 @@ public class WorldCursor : MonoBehaviour
 
         RaycastHit hitInfo;
 
-        if (Physics.Raycast(new Ray(headPosition, gazeDirection), out hitInfo, 100f, SpatialMappingManager.Instance.WallMask))
+        if (Physics.Raycast(new Ray(headPosition, gazeDirection), out hitInfo, 100f, raycastMask))
         {
             // If the raycast hit a hologram...
             // Display the cursor mesh.
