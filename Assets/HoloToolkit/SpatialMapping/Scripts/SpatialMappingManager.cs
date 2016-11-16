@@ -18,6 +18,9 @@ namespace HoloToolkit.Unity
         [Tooltip("The physics layer for spatial mapping objects to be set to.")]
         public int PhysicsLayer = 31;
 
+        [Tooltip("The physics layer for spatial mapping objects to be set to.")]
+        public int WallLayer = 30;
+
         [Tooltip("The material to use for rendering spatial mapping data.")]
         public Material surfaceMaterial;
 
@@ -85,6 +88,14 @@ namespace HoloToolkit.Unity
         public int LayerMask
         {
             get { return (1 << PhysicsLayer); }
+        }
+
+        /// <summary>
+        /// Returns the layer as a bit mask.
+        /// </summary>
+        public int WallMask
+        {
+            get { return (1 << WallLayer); }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using HoloToolkit.Unity;
+using UnityEngine;
 
 public class WorldCursor : MonoBehaviour
 {
@@ -21,20 +22,23 @@ public class WorldCursor : MonoBehaviour
 
         RaycastHit hitInfo;
 
-        if (Physics.Raycast(headPosition, gazeDirection, out hitInfo))
+        if (Physics.Raycast(new Ray(headPosition, gazeDirection), out hitInfo, 100f, SpatialMappingManager.Instance.WallMask))
         {
             // If the raycast hit a hologram...
             // Display the cursor mesh.
             meshRenderer.enabled = true;
 
             // Move the cursor to the point where the raycast hit.
-            this.transform.position = hitInfo.point;
+            this.transform.position = hitInfo.point + (0.02f * hitInfo.normal);
 
             // Rotate the cursor to hug the surface of the hologram.
-            this.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            var destRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            Vector3 v = destRotation.eulerAngles;
+            this.transform.rotation = Quaternion.Euler(90, v.y, v.z);
         }
         else
         {
+            
             // If the raycast did not hit a hologram, hide the cursor mesh.
             meshRenderer.enabled = false;
         }

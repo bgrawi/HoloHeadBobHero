@@ -270,7 +270,13 @@ namespace HoloToolkit.Unity
                 else
                 {
                     // Set the plane to use the same layer as the SpatialMapping mesh.
-                    destPlane.layer = SpatialMappingManager.Instance.PhysicsLayer;
+                    if ((surfacePlane.PlaneType & PlaneTypes.Wall) == PlaneTypes.Wall)
+                    {
+                        destPlane.layer = SpatialMappingManager.Instance.WallLayer;
+                    } else
+                    {
+                        destPlane.layer = SpatialMappingManager.Instance.PhysicsLayer;
+                    }
                     ActivePlanes.Add(destPlane);
                 }
 
