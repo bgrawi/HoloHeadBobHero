@@ -58,7 +58,7 @@ public class BobCreator : MonoBehaviour {
         {
             if (currentSong.PopBob() == 1)
             {
-                var newBob = Instantiate(Bob, SpawnLocation.transform.position, Quaternion.Euler(0, 0, 180)) as GameObject;
+                var newBob = Instantiate(Bob, SpawnLocation.transform.position, SpawnLocation.transform.rotation) as GameObject;
                 newBob.SetActive(true);
                 activeBobs.Add(newBob);
             }
@@ -72,7 +72,7 @@ public class BobCreator : MonoBehaviour {
         {
             Speakers.transform.position = speakerOriginalPos;
         }
-
+        return;
         var en = activeBobs.GetEnumerator();
         var removeBobs = new List<GameObject>();
         while (en.MoveNext())

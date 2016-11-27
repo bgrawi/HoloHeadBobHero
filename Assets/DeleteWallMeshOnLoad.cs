@@ -8,9 +8,7 @@ public class DeleteWallMeshOnLoad : MonoBehaviour {
 	void Start () {
         var collider = GetComponent<Collider>();
         var bounds = collider.bounds;
-
-        Debug.Log("DELETING PLANES FOR WALL");
-        return;
+        int planes = 0;
         foreach (var plane in SurfaceMeshesToPlanes.Instance.ActivePlanes)
         {
             if(plane == null || !plane.activeSelf)
@@ -19,8 +17,10 @@ public class DeleteWallMeshOnLoad : MonoBehaviour {
             }
             if (bounds.Intersects(plane.GetComponent<Collider>().bounds))
             {
+                planes++;
                 Destroy(plane);
             }
         }
+        Debug.Log("DELETED " + planes + " PLANES FOR WALL");
     }
 }

@@ -60,5 +60,12 @@ public class GazeGestureManager : MonoBehaviour
             recognizer.CancelGestures();
             recognizer.StartCapturingGestures();
         }
+
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0) && FocusedObject != null)
+        {
+            FocusedObject.SendMessageUpwards("OnSelect");
+        }
+#endif
     }
 }

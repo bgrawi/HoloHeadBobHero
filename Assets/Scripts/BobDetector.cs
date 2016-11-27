@@ -23,25 +23,42 @@ public class BobDetector : MonoBehaviour {
 
     public bool CheckDetectedBob(DetectedBob checkBob)
     {
-        return detectedBob == checkBob;
+        var result = detectedBob == checkBob;
+
+        if(result)
+        {
+            detectionState = DetectionState.COMPLETED;
+            detectedBob = DetectedBob.NONE;
+        }
+
+        return result;
     }
 
     void Update () {
-
+        DetectedBob currentBob;
         if (Camera.main.transform.eulerAngles.x > 10 && Camera.main.transform.eulerAngles.x < 180)
         {
-            detectedBob = DetectedBob.DOWN;
+            currentBob = DetectedBob.DOWN;
         } else if (Camera.main.transform.eulerAngles.z > 10 && Camera.main.transform.eulerAngles.z < 90)
         {
-            detectedBob = DetectedBob.LEFT;
+            currentBob = DetectedBob.LEFT;
         }
         else if (Camera.main.transform.eulerAngles.z > 270 && Camera.main.transform.eulerAngles.z < 350)
         {
-            detectedBob = DetectedBob.RIGHT;
+            currentBob = DetectedBob.RIGHT;
         }
         else
         {
-            detectedBob = DetectedBob.NONE;
+            currentBob = DetectedBob.NONE;
+        }
+
+        if(detectionState == DetectionState.OPEN)
+        {
+            detectedBob = currentBob;
+        } else if (detectionState == DetectionState.COMPLETED && currentBob == DetectedBob.NONE)
+        {
+            detectionState = DetectionState.OPEN;
+            detectedBob = currentBob;
         }
 	}
 }
