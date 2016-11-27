@@ -50,7 +50,7 @@ public class BobCreator : MonoBehaviour {
 
         if(!stoppedSpatialMapper && totalTime > 10000)
         {
-            GameObject.FindGameObjectWithTag("SpatialMapper").GetComponent<SpatialMappingCollider>().freezeUpdates = true;
+            //GameObject.FindGameObjectWithTag("SpatialMapper").GetComponent<SpatialMappingCollider>().freezeUpdates = true;
             stoppedSpatialMapper = true;
         }
 

@@ -180,7 +180,7 @@ public class PlaySpaceManager : Singleton<PlaySpaceManager>
         RemoveSurfaceVertices removeVerts = RemoveSurfaceVertices.Instance;
         if (removeVerts != null && removeVerts.enabled)
         {
-            removeVerts.RemoveSurfaceVerticesWithinBounds(boundingObjects);
+            //removeVerts.RemoveSurfaceVerticesWithinBounds(boundingObjects);
         }
     }
 

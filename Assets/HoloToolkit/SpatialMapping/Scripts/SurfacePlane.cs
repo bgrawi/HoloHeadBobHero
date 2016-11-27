@@ -54,6 +54,9 @@ namespace HoloToolkit.Unity
         [Tooltip("Material to use when rendering planes of the unknown type.")]
         public Material UnknownMaterial;
 
+        [Tooltip("Material to use when rendering planes for occlusion")]
+        public Material OcclusionMaterial;
+
         [Tooltip("Type of plane that the object has been classified as.")]
         public PlaneTypes PlaneType = PlaneTypes.Unknown;
 
@@ -176,7 +179,7 @@ namespace HoloToolkit.Unity
         private void SetPlaneMaterialByType()
         {
             Renderer renderer = gameObject.GetComponent<Renderer>();
-
+            renderer.material = OcclusionMaterial; /*
             switch (PlaneType)
             {
                 case PlaneTypes.Floor:
@@ -209,7 +212,7 @@ namespace HoloToolkit.Unity
                         renderer.material = UnknownMaterial;
                     }
                     break;
-            }
+            }*/
         }
     }
 }

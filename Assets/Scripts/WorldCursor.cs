@@ -6,6 +6,8 @@ public class WorldCursor : MonoBehaviour
 
     public bool OnlyWalls = false;
 
+    public bool ForceVertical = true;
+
     private int raycastMask;
     private MeshRenderer meshRenderer;
 
@@ -40,7 +42,12 @@ public class WorldCursor : MonoBehaviour
             // Rotate the cursor to hug the surface of the hologram.
             var destRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             Vector3 v = destRotation.eulerAngles;
-            this.transform.rotation = Quaternion.Euler(90, v.y, v.z);
+            var x = v.x;
+            if(ForceVertical)
+            {
+                x = 90;
+            }
+            this.transform.rotation = Quaternion.Euler(x, v.y, v.z);
         }
         else
         {

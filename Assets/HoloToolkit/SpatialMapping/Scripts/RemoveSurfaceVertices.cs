@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -62,6 +65,7 @@ namespace HoloToolkit.Unity
         /// <param name="boundingObjects">Collection of GameObjects that define the bounds where spatial mesh vertices should be removed.</param>
         public void RemoveSurfaceVerticesWithinBounds(IEnumerable<GameObject> boundingObjects)
         {
+            Debug.Log("" + removingVerts + ":" + boundingObjects);
             if (boundingObjects == null)
             {
                 return;
@@ -114,6 +118,7 @@ namespace HoloToolkit.Unity
         /// <returns>Yield result.</returns>
         private IEnumerator RemoveSurfaceVerticesWithinBoundsRoutine()
         {
+            Debug.Log("running Routine");
             List<MeshFilter> meshFilters = SpatialMappingManager.Instance.GetMeshFilters();
             float start = Time.realtimeSinceStartup;
 
@@ -121,6 +126,8 @@ namespace HoloToolkit.Unity
             {
                 // Get the current boundingObject.
                 Bounds bounds = boundingObjectsQueue.Dequeue();
+
+                Debug.Log(bounds);
 
                 foreach (MeshFilter filter in meshFilters)
                 {
@@ -132,12 +139,22 @@ namespace HoloToolkit.Unity
                     }
 
                     Mesh mesh = filter.sharedMesh;
+                    MeshRenderer renderer = filter.GetComponent<MeshRenderer>();
+                    Debug.Log(renderer.bounds);
 
-                    if (mesh != null || !mesh.bounds.Intersects(bounds))
+                    // The mesh renderer bounds are in world space.
+                    // If the mesh is null there is nothing to process
+                    // If the renderer is null we can't get the renderer bounds
+                    // If the renderer's bounds aren't contained inside of the current
+                    // bounds from the bounds queue there is no reason to process
+                    // If any of the above conditions are met, then we should go to the next meshfilter. 
+                    if (mesh == null || renderer == null || !renderer.bounds.Intersects(bounds))
                     {
                         // We don't need to do anything to this mesh, move to the next one.
+                        
                         continue;
                     }
+                    Debug.Log("INTERSCETS");
 
                     // Remove vertices from any mesh that intersects with the bounds.
                     Vector3[] verts = mesh.vertices;
@@ -146,7 +163,7 @@ namespace HoloToolkit.Unity
                     // Find which mesh vertices are within the bounds.
                     for (int i = 0; i < verts.Length; ++i)
                     {
-                        if (bounds.Contains(verts[i]))
+                        if (bounds.Contains(filter.transform.TransformPoint(verts[i])))
                         {
                             // These vertices are within bounds, so mark them for removal.
                             vertsToRemove.Add(i);
@@ -155,11 +172,14 @@ namespace HoloToolkit.Unity
                         // If too much time has passed, we need to return control to the main game loop.
                         if ((Time.realtimeSinceStartup - start) > FrameTime)
                         {
+                            
                             // Pause our work here, and continue finding vertices to remove on the next frame.
                             yield return null;
                             start = Time.realtimeSinceStartup;
                         }
                     }
+
+                    Debug.Log("GtG1:" + vertsToRemove.Count);
 
                     if (vertsToRemove.Count == 0)
                     {
@@ -193,17 +213,19 @@ namespace HoloToolkit.Unity
                         if ((Time.realtimeSinceStartup - start) > FrameTime)
                         {
                             // Pause our work, and continue making additional planes on the next frame.
+                            Debug.Log("BEFORE");
                             yield return null;
+                            Debug.Log("AFTER:" + index);
                             start = Time.realtimeSinceStartup;
                         }
                     }
-
+                    Debug.Log("B4 MESH");
                     if (indices.Length == updatedIndices.Count)
                     {
                         // None of the verts to remove were being referenced in the triangle list.
                         continue;
                     }
-
+                    Debug.Log("UPDATING THE MESH!");
                     // Update mesh to use the new triangles.
                     mesh.SetTriangles(updatedIndices.ToArray(), 0);
                     mesh.RecalculateBounds();
@@ -218,6 +240,7 @@ namespace HoloToolkit.Unity
                         collider.sharedMesh = mesh;
                     }
                 }
+                Debug.Log("COUNT:" + boundingObjectsQueue.Count);
             }
 
             Debug.Log("Finished removing vertices.");

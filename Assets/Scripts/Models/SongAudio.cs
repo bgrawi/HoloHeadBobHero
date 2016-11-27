@@ -9,6 +9,6 @@ public class SongAudio : MonoBehaviour
     {
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
-        audio.Play(44100);
+        //audio.Play(44100);
     }
 }

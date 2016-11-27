@@ -43,7 +43,7 @@ public class GazeGestureManager : MonoBehaviour
         RaycastHit hitInfo;
         if (Physics.Raycast(headPosition, gazeDirection, out hitInfo))
         {
-            Debug.Log("Collision:" + hitInfo.collider.gameObject.name);
+            //Debug.Log("Collision:" + hitInfo.collider.gameObject.name);
             // If the raycast hit a hologram, use that as the focused object.
             FocusedObject = hitInfo.collider.gameObject;
         }
